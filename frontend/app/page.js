@@ -14,23 +14,27 @@ export default function LandingPage() {
 
   const handleLoginRedirect = () => {
     setLoading(true);
+    console.log("Redirecting to login page...");
     alert("Redirecting to login...");
     setTimeout(() => {
+      console.log("Navigation to /login initiated.");
       router.push("/login"); // Redirect to the login page
     }, 2000); // Simulate a delay for the spinner
   };
 
   const handleScheduleBlog = async () => {
     setLoading(true);
+    console.log("Attempting to schedule blog with:", { scheduledTime, category });
     try {
       const accessToken = localStorage.getItem("accessToken");
       if (!accessToken) {
+        console.log("Access token not found. Redirecting to login.");
         alert("Please login to schedule a blog.");
         router.push("/login");
         return;
       }
 
-      await fetch("/api/schedules/", {
+      const response = await fetch("/api/schedules/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,20 +42,31 @@ export default function LandingPage() {
         },
         body: JSON.stringify({ scheduled_time: scheduledTime, preferences: { category } }),
       });
-      alert("Blog scheduled successfully!");
+
+      if (response.ok) {
+        console.log("Blog scheduled successfully.");
+        alert("Blog scheduled successfully!");
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to schedule blog:", errorData);
+        alert("Failed to schedule blog. Please try again.");
+      }
     } catch (error) {
+      console.error("Schedule error:", error);
       alert("Failed to schedule blog. Please try again.");
-      console.error("Schedule error", error);
     } finally {
       setLoading(false);
+      console.log("Scheduling process completed.");
     }
   };
 
   const handleGeneratePrompt = async () => {
     setLoading(true);
+    console.log("Attempting to generate blog with prompt:", prompt);
     try {
       const accessToken = localStorage.getItem("accessToken");
       if (!accessToken) {
+        console.log("Access token not found. Redirecting to login.");
         alert("Please login to generate a blog.");
         router.push("/login");
         return;
@@ -65,16 +80,23 @@ export default function LandingPage() {
         body: JSON.stringify({ prompt }),
       });
 
-      const data = await response.json();
-      setGeneratedBlog(data.generated_text);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Blog generated successfully:", data.generated_text);
+        setGeneratedBlog(data.generated_text);
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to generate blog:", errorData);
+        alert("Failed to generate blog.");
+      }
 
     } catch (error) {
+      console.error("Generate error:", error);
       alert("Failed to generate blog.");
-      console.error("Generate error", error);
     } finally {
       setLoading(false);
+      console.log("Generate process completed.");
     }
-
   };
 
   return (
