@@ -14,23 +14,27 @@ export default function Register() {
 
   const handleRegister = async () => {
     setLoading(true);
+    console.log("Attempting registration with:", { username, email, password });
     try {
-      await axios.post("http://127.0.0.1:8000/api/blogs/register/", {
+      const response = await axios.post("http://127.0.0.1:8000/api/blogs/register/", {
         email,
         password,
         username,
       });
+      console.log("Registration successful:", response.data);
       alert("Registration successful! Please login.");
       router.push("/");
     } catch (error) {
+      console.error("Registration failed:", error.response ? error.response.data : error.message);
       alert("Registration failed. Please check your details.");
-      console.error("Registration Error", error);
     } finally {
       setLoading(false);
+      console.log("Registration process completed.");
     }
   };
 
   const handleLoginNavigation = () => {
+    console.log("Navigating to login page.");
     router.push("/login"); // Navigate to the login page
   };
 
