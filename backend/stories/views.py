@@ -1,8 +1,8 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .models import StorySchedule  # Use StorySchedule
-from .serializers import StoryScheduleSerializer
-from .tasks import generate_and_send_story
+from .serilizers import StoryScheduleSerializer
+from .task import generate_and_send_story
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 import logging
