@@ -85,3 +85,36 @@ class ScheduleViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         logger.debug(f"StorySchedule ID {instance.id} deleted from the database.")
         instance.delete()
+
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+import razorpay
+from django.conf import settings
+
+class RazorpayPaymentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        try:
+            # Initialize Razorpay client
+            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+            # Extract payment details from the request
+            amount = request.data.get('amount')  # Amount in paise (e.g., 50000 for ₹500)
+            currency = request.data.get('currency', 'INR')
+            receipt = request.data.get('receipt', 'receipt#1')
+
+            # Create an order
+            order_data = {
+                'amount': amount,
+                'currency': currency,
+                'receipt': receipt,
+            }
+            order = client.order.create(data=order_data)
+
+            # Return the order details
+            return Response(order, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
