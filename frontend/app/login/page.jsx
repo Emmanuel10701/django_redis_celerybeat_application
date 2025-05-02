@@ -4,6 +4,9 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { CircularProgress } from "@mui/material";
+import EmailIcon from '@mui/icons-material/Email';
+import LockIcon from '@mui/icons-material/Lock';
+import LoginIcon from '@mui/icons-material/Login';
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -40,20 +43,26 @@ export default function Login() {
     <div className="flex items-center justify-center h-screen bg-gradient-to-r from-blue-400 to-purple-500">
       <div className="bg-white p-12 rounded-xl shadow-lg w-[600px] h-[500px] border border-gray-200 hover:shadow-2xl transition-shadow duration-300">
         <h2 className="text-4xl font-bold mb-8 text-center text-gray-800">Login</h2>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-6 text-lg border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-blue-500 focus:outline-none transition duration-300 mb-6"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-6 text-lg border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-blue-500 focus:outline-none transition duration-300 mb-6"
-        />
+        <div className="relative mb-6">
+          <EmailIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-6 pl-14 text-lg border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-blue-500 focus:outline-none transition duration-300"
+          />
+        </div>
+        <div className="relative mb-6">
+          <LockIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-6 pl-14 text-lg border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-blue-500 focus:outline-none transition duration-300"
+          />
+        </div>
         <button
           onClick={handleLogin}
           className="w-full bg-blue-600 text-white py-4 text-lg rounded-lg shadow-md hover:bg-blue-700 transition duration-300 flex justify-center items-center"
@@ -65,7 +74,10 @@ export default function Login() {
               <span className="ml-2">Processing...</span>
             </>
           ) : (
-            "Login"
+            <>
+              <LoginIcon className="mr-2" />
+              Login
+            </>
           )}
         </button>
         <div className="mt-4 text-center">
